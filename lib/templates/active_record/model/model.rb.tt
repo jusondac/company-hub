@@ -1,0 +1,18 @@
+class <%= class_name %> < ApplicationRecord
+<% attributes.select(&:reference?).each do |attribute| -%>
+  belongs_to :<%= attribute.name %>
+<% end -%>
+  # Validations
+<% attributes.reject(&:reference?).each do |attribute| -%>
+  validates :<%= attribute.name %>, presence: true
+<% end -%>
+
+  ## update the ransackable below with column you want to add ransack
+  def self.ransackable_attributes(auth_object = nil)
+    ["id"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    []
+  end
+end

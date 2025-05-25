@@ -1,0 +1,37 @@
+<%%= form_with(model: <%= model_resource_name %>, class: "contents text-white " ) do |form| %>
+  <%% if <%= singular_table_name %>.errors.any? %>
+    <div style="color: red">
+      <h2><%%= pluralize(<%= singular_table_name %>.errors.count, "error") %> prohibited this <%= singular_table_name %> from being saved:</h2>
+
+      <ul>
+        <%% <%= singular_table_name %>.errors.each do |error| %>
+          <li><%%= error.full_message %></li>
+        <%% end %>
+      </ul>
+    </div>
+  <%% end %>
+
+<% attributes.each do |attribute| -%>
+  <div>
+<% if attribute.password_digest? -%>
+    <%%= form.label :password, style: "display: block" %>
+    <%%= form.password_field :password %>
+  </div>
+
+  <div>
+    <%%= form.label :password_confirmation, style: "display: block" %>
+    <%%= form.password_field :password_confirmation %>
+<% elsif attribute.attachments? -%>
+    <%%= form.label :<%= attribute.column_name %>, style: "display: block" %>
+    <%%= form.<%= attribute.field_type %> :<%= attribute.column_name %>, multiple: true %>
+<% else -%>
+    <%%= form.label :<%= attribute.column_name %>, style: "display: block" %>
+    <%%= form.<%= attribute.field_type %> :<%= attribute.column_name %>, placeholder: "<%= attribute.column_name %>", class: ["block shadow-sm rounded-md border bg-gray-700 px-3 py-2 mt-2 w-full", {"border-gray-600 focus:outline-blue-600": <%= singular_table_name %>.errors[:<%= attribute.column_name %>].none?, "border-red-400 focus:outline-red-600": <%= singular_table_name %>.errors[:<%= attribute.column_name %>].any?}] %>
+<% end -%>
+  </div>
+
+<% end -%>
+  <div>
+    <%%= form.submit %>
+  </div>
+<%% end %>

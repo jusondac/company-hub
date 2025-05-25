@@ -1,0 +1,13 @@
+<nav-pagination class="block sticky bottom-0 right-0 items-center w-full p-4 bg-white border-t border-gray-200 sm:flex sm:justify-between dark:bg-gray-800 dark:border-gray-700 pagy">
+    <div class="flex items-center mb-4 sm:mb-0 text-gray-400 gap-4">
+        <div class="h-10 flex items-center gap-4">
+            <%== pagy_prev_a(pagy) %>
+            <%== pagy_next_a(pagy) %>
+            <%== pagy_info(pagy) %>
+        </div>
+    </div>
+    <div class="flex items-center space-x-3">
+        <%= link_to "< Previous", pagy.prev ? url_for(page: pagy.prev) : "#", class: "font-bold px-4 py-2 bg-gray-200 text-gray-600 rounded-md shadow-md hover:bg-gray-300 dark:bg-blue-700 dark:text-gray-300", disabled: !pagy.prev %>
+        <%= link_to "Next >", pagy.next ? url_for(page: pagy.next) : "#", class: "font-bold px-4 py-2 bg-gray-200 text-gray-600 rounded-md shadow-md hover:bg-gray-300 dark:bg-blue-700 dark:text-gray-300", disabled: !pagy.next %>
+    </div>
+</nav-pagination>
