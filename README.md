@@ -1,4 +1,10 @@
 # Gamify Rails - Company Management System
+![Screenshot From 2025-05-26 18-38-04](https://github.com/user-attachments/assets/5d0d0c69-4225-4309-9c9d-332feacc0350)
+![Screenshot From 2025-05-26 18-38-32](https://github.com/user-attachments/assets/7baacdca-df9c-440f-b9e1-26c1cc66347a)
+![Screenshot From 2025-05-26 18-38-39](https://github.com/user-attachments/assets/dd62cd21-1358-46d8-a3c1-6832543de00a)
+![Screenshot From 2025-05-26 18-38-51](https://github.com/user-attachments/assets/1c9ac0c1-6854-486b-be3c-655d96798f8a)
+![Screenshot From 2025-05-26 18-39-16](https://github.com/user-attachments/assets/e0c67f63-22cd-45a8-b90a-da1691747ef8)
+![Screenshot From 2025-05-26 18-39-19](https://github.com/user-attachments/assets/802d90b1-cdea-4e83-9e4a-e40184a25d6f)
 
 ## About
 Gamify Rails is a Ruby on Rails application designed to manage company information, employees, and workflows using gamification principles. The application helps businesses track employee performance, manage projects, and increase engagement through game-like elements such as points, badges, and leaderboards.
@@ -15,26 +21,13 @@ Gamify Rails is a Ruby on Rails application designed to manage company informati
 - Employee profiles and hierarchies
 - Performance tracking
 - Skill assessment and development
-- Attendance and leave management
-
-### Gamification Elements
-- Point system for completing tasks
-- Achievement badges for milestones
-- Leaderboards for team performance
-- Customizable rewards system
-
-### Analytics
-- Performance analytics and reporting
-- Progress visualization
-- Goal tracking and metrics
-- Exportable reports
 
 ## Installation
 
 ### Requirements
 - Ruby version 3.0.0 or higher
 - Rails 7.0.0 or higher
-- PostgreSQL 13.0 or higher
+- sqlite 2.1 or higher
 - Node.js 14.0.0 or higher
 - Yarn 1.22.0 or higher
 
