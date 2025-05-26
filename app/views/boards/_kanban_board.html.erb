@@ -1,4 +1,6 @@
-<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6">
+<div class="bg-white dark:bg-gray-950 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 max-h-full overflow-y-auto"
+     data-controller="modal kanban"
+     data-kanban-url-value="<%= update_card_board_tasks_path(@board) %>">
   <!-- Board Header -->
   <div class="flex items-center justify-between mb-6">
     <div class="flex items-center gap-3">
@@ -194,3 +196,5 @@
 <%= render 'boards/modals/task_detail_modal' %>
 <!-- Task Detail Modal -->
 <%= render 'boards/modals/task_edit_modal' %>
+<!-- Delete Card Modal -->
+<%= render 'boards/modals/delete_card_modal' %>

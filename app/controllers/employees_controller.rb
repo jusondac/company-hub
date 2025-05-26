@@ -2,7 +2,8 @@ class EmployeesController < ApplicationController
   before_action :set_employee, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @employees = Employee.ordered_by_position
+    @q = Employee.ransack(params[:q])
+    @pagy, @employees = pagy(@q.result(distinct: true).includes(:parent, :children).ordered_by_position, limit: 6)
     @root_employees = Employee.root_employees.ordered_by_position
   end
 
