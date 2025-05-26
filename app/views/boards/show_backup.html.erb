@@ -1,0 +1,617 @@
+<div class="container mx-auto px-6 py-8" data-controller="modal kanban" 
+     data-kanban-url-value="<%= update_card_board_tasks_path(@board) %>">
+
+  <!-- Board Header -->
+  <div class="mb-8">
+    <%= render 'board_header' %>
+  </div>
+  <!-- Kanban Board -->
+  <%= render 'kanban_board' %>
+
+  <!-- Back Navigation -->
+  <div class="mt-8">
+    <%= link_to boards_path, class: "bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center" do %>
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      Back to Boards
+    <% end %>
+  </div>
+
+  <!-- All Modals -->
+  <%= render 'modals' %>
+  <!-- New Task Modal -->
+  <div id="new-task-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-4xl max-h-full">
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Add New Task</h3>
+          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="new-task-modal">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <div class="p-4 md:p-5">
+          <%= form_with(model: [@board, Task.new], local: true, class: "space-y-4") do |form| %>
+            <div>
+              <%= form.label :title, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+              <%= form.text_field :title, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white", placeholder: "Enter task title..." %>
+            </div>
+            <div>
+              <%= form.label :description, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+              <%= form.text_area :description, rows: 4, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white", placeholder: "Enter task description..." %>
+            </div>
+            <!-- Employee Assignment Section -->
+            <div>
+              <label class="block text-sm font-medium text-gray-900 dark:text-white mb-3">Assign Employees</label>
+              <div data-controller="drag-drop-assign"
+                   data-drag-drop-assign-field-name-value="task[employee_ids][]"
+                   data-drag-drop-assign-initial-assigned-value="[]"
+                   class="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+                <!-- Search -->
+                <div class="mb-4">
+                  <div class="relative">
+                    <input type="text" 
+                           data-drag-drop-assign-target="searchInput"
+                           placeholder="Search employees..."
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <!-- Available Employees -->
+                  <div class="assignment-column">
+                    <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Available (<span class="assignment-count"><%= Employee.count %></span>)
+                    </h4>
+                    <div data-drag-drop-assign-target="availableList" 
+                         class="min-h-[150px] max-h-48 overflow-y-auto space-y-2 p-2 bg-white dark:bg-gray-700 rounded border-2 border-dashed border-gray-300 dark:border-gray-600">
+                      <% Employee.all.each do |employee| %>
+                        <div class="assignment-item flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800 rounded cursor-move hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                             data-id="<%= employee.id %>"
+                             data-search-text="<%= employee.username.downcase %> <%= employee.title.downcase %>">
+                          <div class="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                            <span class="text-white text-xs font-bold">
+                              <%= employee.username.first.upcase %>
+                            </span>
+                          </div>
+                          <div class="flex-1 min-w-0">
+                            <div class="text-sm font-medium text-gray-900 dark:text-white truncate"><%= employee.username %></div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400 truncate"><%= employee.title %></div>
+                          </div>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                  <!-- Assigned Employees -->
+                  <div class="assignment-column">
+                    <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Assigned (<span class="assignment-count">0</span>)
+                    </h4>
+                    <div data-drag-drop-assign-target="assignedList" 
+                         class="min-h-[150px] max-h-48 overflow-y-auto space-y-2 p-2 bg-white dark:bg-gray-700 rounded border-2 border-dashed border-gray-300 dark:border-gray-600">
+                      <div class="assignment-empty flex flex-col items-center justify-center py-8 text-gray-400 dark:text-gray-500">
+                        <svg class="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <span class="text-sm">Drag employees here to assign</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Hidden inputs for form submission -->
+                <div data-drag-drop-assign-target="hiddenInput"></div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <%= form.label :card_id, "Card", class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+                <%= form.select :card_id, options_from_collection_for_select(@board.cards.ordered_by_position, :id, :title), { prompt: "Select a card..." }, { class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white", id: "task-card-select" } %>
+              </div>
+              <div>
+                <%= form.label :priority, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+                <%= form.select :priority, options_for_select([['Low', 'Low'], ['Medium', 'Medium'], ['High', 'High'], ['Critical', 'Critical']], 'Low'), {}, { class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white" } %>
+              </div>
+              <div>
+                <%= form.label :position, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+                <%= form.number_field :position, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white", placeholder: "Position (optional)" %>
+              </div>
+            </div>
+            <div class="flex items-center pt-4 space-x-2 rtl:space-x-reverse border-t border-gray-200 rounded-b dark:border-gray-600">
+              <%= form.submit "Create Task", class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" %>
+              <button data-modal-hide="new-task-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancel</button>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- New Card Modal -->
+  <div id="new-card-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Add New Card</h3>
+          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="new-card-modal">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <div class="p-4 md:p-5">
+          <%= form_with(model: [@board, Card.new], local: true, class: "space-y-4") do |form| %>
+            <div>
+              <%= form.label :title, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+              <%= form.text_field :title, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white", placeholder: "Enter card title..." %>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <%= form.label :color, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+                <%= form.color_field :color, value: "#6366f1", class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full h-10 dark:bg-gray-600 dark:border-gray-500" %>
+              </div>
+              <div>
+                <%= form.label :position, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+                <%= form.number_field :position, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white", placeholder: "Position (optional)" %>
+              </div>
+            </div>
+            <div class="flex items-center pt-4 space-x-2 rtl:space-x-reverse border-t border-gray-200 rounded-b dark:border-gray-600">
+              <%= form.submit "Create Card", class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" %>
+              <button data-modal-hide="new-card-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancel</button>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Edit Board Modal -->
+  <div id="edit-board-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-4xl max-h-full">
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Edit Board</h3>
+          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="edit-board-modal">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <div class="p-4 md:p-5">
+          <%= form_with(model: @board, local: true, class: "space-y-6") do |form| %>
+            <div>
+              <%= form.label :name, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+              <%= form.text_field :name, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white", placeholder: "Enter board name..." %>
+            </div>
+            <div>
+              <%= form.label :description, class: "block mb-2 text-sm font-medium text-gray-900 dark:text-white" %>
+              <%= form.text_area :description, rows: 4, class: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white", placeholder: "Enter board description..." %>
+            </div>
+            <!-- Manager Assignment Section -->
+            <div>
+              <label class="block text-sm font-medium text-gray-900 dark:text-white mb-3">Assign Managers</label>
+              <div data-controller="drag-drop-assign"
+                   data-drag-drop-assign-field-name-value="board[employee_ids][]"
+                   data-drag-drop-assign-initial-assigned-value="<%= @board.employee_ids.to_json %>"
+                   class="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+                <!-- Search -->
+                <div class="mb-4">
+                  <div class="relative">
+                    <input type="text" 
+                           data-drag-drop-assign-target="searchInput"
+                           placeholder="Search employees..."
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <!-- Available Employees -->
+                  <div class="assignment-column">
+                    <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Available (<span class="assignment-count"><%= Employee.count %></span>)
+                    </h4>
+                    <div data-drag-drop-assign-target="availableList" 
+                         class="min-h-[200px] max-h-60 overflow-y-auto space-y-2 p-2 bg-white dark:bg-gray-700 rounded border-2 border-dashed border-gray-300 dark:border-gray-600">
+                      <% Employee.all.each do |employee| %>
+                        <div class="assignment-item flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-800 rounded cursor-move hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                             data-id="<%= employee.id %>"
+                             data-search-text="<%= employee.username.downcase %> <%= employee.title.downcase %>">
+                          <div class="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                            <span class="text-white text-xs font-bold">
+                              <%= employee.username.first.upcase %>
+                            </span>
+                          </div>
+                          <div class="flex-1 min-w-0">
+                            <div class="text-sm font-medium text-gray-900 dark:text-white truncate"><%= employee.username %></div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400 truncate"><%= employee.title %></div>
+                          </div>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                  <!-- Assigned Managers -->
+                  <div class="assignment-column">
+                    <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Assigned Managers (<span class="assignment-count">0</span>)
+                    </h4>
+                    <div data-drag-drop-assign-target="assignedList" 
+                         class="min-h-[200px] max-h-60 overflow-y-auto space-y-2 p-2 bg-white dark:bg-gray-700 rounded border-2 border-dashed border-gray-300 dark:border-gray-600">
+                      <div class="assignment-empty flex flex-col items-center justify-center py-8 text-gray-400 dark:text-gray-500">
+                        <svg class="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <span class="text-sm">Drag employees here to assign as managers</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Hidden inputs for form submission -->
+                <div data-drag-drop-assign-target="hiddenInput"></div>
+              </div>
+            </div>
+            <div class="flex items-center pt-4 space-x-2 rtl:space-x-reverse border-t border-gray-200 rounded-b dark:border-gray-600">
+              <%= form.submit "Update Board", class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" %>
+              <button data-modal-hide="edit-board-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancel</button>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Managers Modal -->
+  <div id="managers-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-4xl max-h-full">
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m3 5.197v1z"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Board Managers</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Team members managing this board</p>
+            </div>
+          </div>
+          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="managers-modal">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <div class="p-4 md:p-5">
+          <% if @board.employees.any? %>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <% @board.employees.each do |employee| %>
+                <div class="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-700">
+                  <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <span class="text-white text-lg font-bold">
+                      <%= employee.username.first(2).upcase %>
+                    </span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h4 class="font-semibold text-gray-900 dark:text-white text-lg truncate"><%= employee.username %></h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 truncate"><%= employee.title %></p>
+                    <div class="flex items-center mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                      </svg>
+                      <%= employee.email %>
+                    </div>
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <%= link_to employee_path(employee), 
+                                class: "text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors p-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg",
+                                title: "View Profile" do %>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                      </svg>
+                    <% end %>
+                    <% assigned_tasks_count = @board.tasks.joins(:employees).where(employees: { id: employee.id }).count %>
+                    <div class="text-xs text-gray-500 dark:text-gray-400 text-center">
+                      <%= assigned_tasks_count %> <%= 'task'.pluralize(assigned_tasks_count) %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+            <!-- Summary Stats -->
+            <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <div class="grid grid-cols-3 gap-4 text-center">
+                <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4">
+                  <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                    <%= @board.employees.count %>
+                  </div>
+                  <div class="text-sm text-gray-600 dark:text-gray-400">Total Managers</div>
+                </div>
+                <div class="bg-green-50 dark:bg-green-900/30 rounded-lg p-4">
+                  <div class="text-2xl font-bold text-green-600 dark:text-green-400">
+                    <%= @board.tasks.joins(:employees).distinct.count %>
+                  </div>
+                  <div class="text-sm text-gray-600 dark:text-gray-400">Assigned Tasks</div>
+                </div>
+                <div class="bg-purple-50 dark:bg-purple-900/30 rounded-lg p-4">
+                  <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                    <%= @board.tasks.left_joins(:employees).where(employees: { id: nil }).count %>
+                  </div>
+                  <div class="text-sm text-gray-600 dark:text-gray-400">Unassigned Tasks</div>
+                </div>
+              </div>
+            </div>
+          <% else %>
+            <!-- Empty State -->
+            <div class="text-center py-12">
+              <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+              </div>
+              <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">No Managers Assigned</h4>
+              <p class="text-gray-600 dark:text-gray-400 mb-6">
+                This board doesn't have any managers assigned yet. Add team members to help organize and manage tasks.
+              </p>
+              <button data-modal-hide="managers-modal" data-modal-target="edit-board-modal" data-modal-toggle="edit-board-modal" 
+                      class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors inline-flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Manage Board
+              </button>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Edit Card Modal -->
+  <div id="edit-card-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Edit Card</h3>
+          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="edit-card-modal">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <div class="p-4 md:p-5" id="edit-card-content">
+          <!-- Content will be loaded dynamically -->
+          <div class="text-center py-8">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <p class="mt-2 text-gray-500">Loading...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Delete Card Modal -->
+  <div id="delete-card-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="delete-card-modal">
+          <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+          </svg>
+          <span class="sr-only">Close modal</span>
+        </button>
+        <div class="p-4 md:p-5 text-center">
+          <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+          </svg>
+          <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure you want to delete the card "<span id="delete-card-title"></span>"?</h3>
+          <p class="mb-5 text-sm text-gray-400 dark:text-gray-500">This will move all tasks to the first card.</p>
+          <button id="confirm-delete-card" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+            Yes, I'm sure
+          </button>
+          <button data-modal-hide="delete-card-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">No, cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Task Detail Modal -->
+  <div id="task-detail-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-4xl max-h-full">
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Task Details</h3>
+          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="task-detail-modal">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <div class="p-4 md:p-5" id="task-detail-content">
+          <!-- Content will be loaded dynamically -->
+          <div class="text-center py-8">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <p class="mt-2 text-gray-500">Loading...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Task Edit Modal -->
+  <div id="task-edit-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-4xl max-h-full">
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Edit Task</h3>
+          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="task-edit-modal">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <div class="p-4 md:p-5" id="task-edit-content">
+          <!-- Content will be loaded dynamically -->
+          <div class="text-center py-8">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <p class="mt-2 text-gray-500">Loading...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  // Handle card_id parameter for Add Task buttons
+  document.addEventListener('DOMContentLoaded', function() {
+    const addTaskButtons = document.querySelectorAll('[data-modal-target="new-task-modal"]');
+    const cardSelect = document.getElementById('task-card-select');
+
+    addTaskButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const cardId = this.getAttribute('data-card-id');
+        if (cardId && cardSelect) {
+          cardSelect.value = cardId;
+        }
+      });
+    });
+
+    // Handle edit card modal
+    const editCardButtons = document.querySelectorAll('[data-modal-target="edit-card-modal"]');
+    editCardButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const cardId = this.getAttribute('data-card-id');
+        loadCardForm(cardId);
+      });
+    });
+
+    // Handle delete card modal
+    const deleteCardButtons = document.querySelectorAll('[data-modal-target="delete-card-modal"]');
+    deleteCardButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const cardId = this.getAttribute('data-card-id');
+        const cardTitle = this.getAttribute('data-card-title');
+        setupDeleteCard(cardId, cardTitle);
+      });
+    });
+
+    // Handle task detail modal
+    const taskCards = document.querySelectorAll('[data-modal-target="task-detail-modal"]');
+    taskCards.forEach(card => {
+      card.addEventListener('click', function() {
+        const taskId = this.getAttribute('data-task-id');
+        loadTaskDetail(taskId);
+      });
+    });
+
+    // Handle task edit modal
+    const taskEditButtons = document.querySelectorAll('[data-modal-target="task-edit-modal"]');
+    taskEditButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const taskId = this.getAttribute('data-task-id');
+        loadTaskForm(taskId);
+      });
+    });
+  });
+
+  // Load card form for editing
+  function loadCardForm(cardId) {
+    const content = document.getElementById('edit-card-content');
+    content.innerHTML = '<div class="text-center py-8"><div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div><p class="mt-2 text-gray-500">Loading...</p></div>';
+
+    fetch(`/boards/<%= @board.id %>/cards/${cardId}/edit`, {
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'text/html'
+      }
+    })
+    .then(response => response.text())
+    .then(html => {
+      content.innerHTML = html;
+    })
+    .catch(error => {
+      console.error('Error loading card form:', error);
+      content.innerHTML = '<div class="text-center py-8 text-red-500">Error loading card form</div>';
+    });
+  }
+
+  // Setup delete card confirmation
+  function setupDeleteCard(cardId, cardTitle) {
+    document.getElementById('delete-card-title').textContent = cardTitle;
+    document.getElementById('confirm-delete-card').onclick = function() {
+      deleteCard(cardId);
+    };
+  }
+
+  // Delete card
+  function deleteCard(cardId) {
+    fetch(`/boards/<%= @board.id %>/cards/${cardId}`, {
+      method: 'DELETE',
+      headers: {
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        location.reload(); // Reload the page to update the board
+      } else {
+        alert('Error deleting card');
+      }
+    })
+    .catch(error => {
+      console.error('Error deleting card:', error);
+      alert('Error deleting card');
+    });
+  }
+
+  // Load task detail
+  function loadTaskDetail(taskId) {
+    const content = document.getElementById('task-detail-content');
+    content.innerHTML = '<div class="text-center py-8"><div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div><p class="mt-2 text-gray-500">Loading...</p></div>';
+
+    fetch(`/boards/<%= @board.id %>/tasks/${taskId}`, {
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'text/html'
+      }
+    })
+    .then(response => response.text())
+    .then(html => {
+      content.innerHTML = html;
+    })
+    .catch(error => {
+      console.error('Error loading task detail:', error);
+      content.innerHTML = '<div class="text-center py-8 text-red-500">Error loading task details</div>';
+    });
+  }
+
+  // Load task form for editing
+  function loadTaskForm(taskId) {
+    const content = document.getElementById('task-edit-content');
+    content.innerHTML = '<div class="text-center py-8"><div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div><p class="mt-2 text-gray-500">Loading...</p></div>';
+
+    fetch(`/boards/<%= @board.id %>/tasks/${taskId}/edit`, {
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'text/html'
+      }
+    })
+    .then(response => response.text())
+    .then(html => {
+      content.innerHTML = html;
+    })
+    .catch(error => {
+      console.error('Error loading task form:', error);
+      content.innerHTML = '<div class="text-center py-8 text-red-500">Error loading task form</div>';
+    });
+  }
+</script>

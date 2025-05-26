@@ -1,17 +1,44 @@
-<div class="mx-auto md:w-2/3 w-full">
-  <% if alert = flash[:alert] %>
-    <p class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg inline-block" id="alert"><%= alert %></p>
-  <% end %>
-
-  <h1 class="font-bold text-4xl">Forgot your password?</h1>
-
-  <%= form_with url: passwords_path, class: "contents" do |form| %>
-    <div class="my-5">
-      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "block shadow-sm rounded-md border border-gray-400 focus:outline-solid focus:outline-blue-600 px-3 py-2 mt-2 w-full" %>
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <!-- Header -->
+    <div class="text-center">
+      <div class="mx-auto h-12 w-12 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center mb-6">
+        <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+        </svg>
+      </div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Forgot your password?</h1>
+      <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Enter your email address and we'll send you reset instructions</p>
     </div>
-
-    <div class="inline">
-      <%= form.submit "Email reset instructions", class: "w-full sm:w-auto text-center rounded-lg px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+    <!-- Alert -->
+    <% if alert = flash[:alert] %>
+      <div class="modern-alert modern-alert-error">
+        <%= alert %>
+      </div>
+    <% end %>
+    <!-- Form -->
+    <div class="modern-form">
+      <%= form_with url: passwords_path do |form| %>
+        <div class="modern-form-group">
+          <%= form.label :email_address, "Email address", class: "modern-label" %>
+          <%= form.email_field :email_address, 
+              required: true, 
+              autofocus: true, 
+              autocomplete: "username", 
+              placeholder: "Enter your email address", 
+              value: params[:email_address], 
+              class: "modern-input" %>
+        </div>
+        <div class="flex items-center justify-between">
+          <%= form.submit "Send reset instructions", class: "modern-btn modern-btn-primary modern-btn-lg w-full mb-4" %>
+        </div>
+        <div class="text-center">
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Remember your password? 
+            <%= link_to 'Back to sign in', new_session_path, class: "font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400" %>
+          </p>
+        </div>
+      <% end %>
     </div>
-  <% end %>
+  </div>
 </div>

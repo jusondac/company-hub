@@ -1,5 +1,183 @@
-<div>
-  <h1 class="font-bold text-4xl">Home#index</h1>
-  <p>Find me in app/views/home/index.html.erb</p>
+<div class="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+  <!-- Header Section -->
+  <div class="bg-gray-800 shadow-lg border-b border-gray-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-6">
+        <div>
+          <h1 class="text-3xl font-bold text-white">Welcome back<%= Current.user ? ", #{Current.user.email_address.split('@').first.capitalize}" : "" %>! 🚀</h1>
+          <p class="text-gray-300 mt-1">Your company dashboard overview</p>
+        </div>
+        <div class="flex items-center space-x-4">
+          <%= link_to "Employees", employees_path, class: "bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition-colors" %>
+          <%= link_to "Boards", boards_path, class: "bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg font-medium transition-colors" %>
+          <%= button_to "Logout", session_path, method: :delete, class: "bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition-colors" %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <!-- Employees Card -->
+      <div class="bg-gray-800 rounded-xl shadow-xl p-6 border border-gray-700 hover:shadow-2xl hover:border-gray-600 transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-400">Total Employees</p>
+            <p class="text-3xl font-bold text-blue-400"><%= @total_employees %></p>
+          </div>
+          <div class="p-3 bg-blue-900/50 rounded-full">
+            <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="mt-4">
+          <%= link_to "Manage Employees →", employees_path, class: "text-blue-400 hover:text-blue-300 font-medium" %>
+        </div>
+      </div>
+      <!-- Boards Card -->
+      <div class="bg-gray-800 rounded-xl shadow-xl p-6 border border-gray-700 hover:shadow-2xl hover:border-gray-600 transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-400">Active Boards</p>
+            <p class="text-3xl font-bold text-green-400"><%= @total_boards %></p>
+          </div>
+          <div class="p-3 bg-green-900/50 rounded-full">
+            <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2z"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="mt-4">
+          <%= link_to "View Boards →", boards_path, class: "text-green-400 hover:text-green-300 font-medium" %>
+        </div>
+      </div>
+      <!-- Tasks Card -->
+      <div class="bg-gray-800 rounded-xl shadow-xl p-6 border border-gray-700 hover:shadow-2xl hover:border-gray-600 transition-all">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-400">Total Tasks</p>
+            <p class="text-3xl font-bold text-purple-400"><%= @total_tasks %></p>
+          </div>
+          <div class="p-3 bg-purple-900/50 rounded-full">
+            <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="mt-4">
+          <span class="text-purple-400 font-medium">Across all boards</span>
+        </div>
+      </div>
+    </div>
+    <!-- Recent Activity Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Recent Tasks -->
+      <div class="bg-gray-800 rounded-xl shadow-xl p-6 border border-gray-700">
+        <h2 class="text-xl font-bold text-white mb-4">📋 Recent Tasks</h2>
+        <% if @recent_tasks.any? %>
+          <div class="space-y-3">
+            <% @recent_tasks.each do |task| %>
+              <div class="flex items-start space-x-3 p-3 bg-gray-700/50 rounded-lg hover:bg-gray-700 transition-colors">
+                <div class="flex-shrink-0 w-2 h-2 bg-blue-400 rounded-full mt-2"></div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-white truncate"><%= task.title %></p>
+                  <p class="text-sm text-gray-300">Board: <%= task.board.name %></p>
+                  <p class="text-xs text-gray-400">
+                    <%= pluralize(task.employees.count, 'assignee') %>
+                  </p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="mt-4 pt-4 border-t border-gray-700">
+            <%= link_to "View all tasks", boards_path, class: "text-blue-400 hover:text-blue-300 font-medium" %>
+          </div>
+        <% else %>
+          <div class="text-center py-8 text-gray-400">
+            <svg class="w-12 h-12 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            </svg>
+            <p>No tasks yet</p>
+            <%= link_to "Create your first board", boards_path, class: "text-blue-400 hover:text-blue-300 font-medium" %>
+          </div>
+        <% end %>
+      </div>
+      <!-- Recent Boards -->
+      <div class="bg-gray-800 rounded-xl shadow-xl p-6 border border-gray-700">
+        <h2 class="text-xl font-bold text-white mb-4">📊 Recent Boards</h2>
+        <% if @recent_boards.any? %>
+          <div class="space-y-4">
+            <% @recent_boards.each do |board| %>
+              <div class="p-4 bg-gradient-to-r from-gray-700/50 to-gray-600/50 rounded-lg border border-gray-600 hover:border-gray-500 transition-colors">
+                <div class="flex items-start justify-between">
+                  <div class="flex-1 min-w-0">
+                    <h3 class="text-lg font-medium text-white truncate"><%= board.name %></h3>
+                    <p class="text-sm text-gray-300 mt-1 line-clamp-2"><%= board.description %></p>
+                    <div class="flex items-center space-x-4 mt-2 text-xs text-gray-400">
+                      <span><%= pluralize(board.tasks.count, 'task') %></span>
+                      <span><%= pluralize(board.employees.count, 'member') %></span>
+                    </div>
+                  </div>
+                  <div class="flex-shrink-0 ml-2">
+                    <%= link_to "View", board_path(board), class: "bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded text-xs font-medium transition-colors" %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="mt-4 pt-4 border-t border-gray-700">
+            <%= link_to "View all boards", boards_path, class: "text-green-400 hover:text-green-300 font-medium" %>
+          </div>
+        <% else %>
+          <div class="text-center py-8 text-gray-400">
+            <svg class="w-12 h-12 mx-auto mb-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2z"></path>
+            </svg>
+            <p>No boards created yet</p>
+            <%= link_to "Create your first board", new_board_path, class: "text-green-400 hover:text-green-300 font-medium" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <!-- Quick Actions -->
+    <div class="mt-8 bg-gray-800 rounded-xl shadow-xl p-6 border border-gray-700">
+      <h2 class="text-xl font-bold text-white mb-4">⚡ Quick Actions</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <%= link_to new_employee_path, class: "flex items-center p-4 bg-blue-900/30 hover:bg-blue-900/50 rounded-lg border border-blue-800 hover:border-blue-700 transition-colors group" do %>
+          <div class="p-2 bg-blue-800 rounded-lg mr-3 group-hover:bg-blue-700 transition-colors">
+            <svg class="w-5 h-5 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+          </div>
+          <span class="font-medium text-blue-200">Add Employee</span>
+        <% end %>
+        <%= link_to new_board_path, class: "flex items-center p-4 bg-green-900/30 hover:bg-green-900/50 rounded-lg border border-green-800 hover:border-green-700 transition-colors group" do %>
+          <div class="p-2 bg-green-800 rounded-lg mr-3 group-hover:bg-green-700 transition-colors">
+            <svg class="w-5 h-5 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+          </div>
+          <span class="font-medium text-green-200">Create Board</span>
+        <% end %>
+        <%= link_to employees_path, class: "flex items-center p-4 bg-purple-900/30 hover:bg-purple-900/50 rounded-lg border border-purple-800 hover:border-purple-700 transition-colors group" do %>
+          <div class="p-2 bg-purple-800 rounded-lg mr-3 group-hover:bg-purple-700 transition-colors">
+            <svg class="w-5 h-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <span class="font-medium text-purple-200">View Team</span>
+        <% end %>
+        <%= link_to boards_path, class: "flex items-center p-4 bg-orange-900/30 hover:bg-orange-900/50 rounded-lg border border-orange-800 hover:border-orange-700 transition-colors group" do %>
+          <div class="p-2 bg-orange-800 rounded-lg mr-3 group-hover:bg-orange-700 transition-colors">
+            <svg class="w-5 h-5 text-orange-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+          </div>
+          <span class="font-medium text-orange-200">All Projects</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </div>
-<%= button_to "Log out", session_path, method: :delete, class: "nav-link" %>

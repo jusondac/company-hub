@@ -8,3 +8,988 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+/* Dark Mode and Modern Design Enhancements */
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+} */
+
+/* Custom dark mode variables */
+:root {
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --secondary-color: #6366f1;
+  --accent-color: #10b981;
+  --danger-color: #ef4444;
+  --warning-color: #f59e0b;
+}
+
+/* Smooth transitions for all elements */
+* {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom scrollbar for dark mode */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500;
+}
+
+/* Modern glass effect */
+.glass-effect {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass-effect {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Modern table styles */
+.modern-table {
+  border-spacing: 0;
+  border-collapse: separate;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.dark .modern-table {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Custom button styles */
+.btn-primary {
+  @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
+}
+
+.btn-secondary {
+  @apply bg-gray-600 hover:bg-gray-700 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
+}
+
+.btn-danger {
+  @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
+}
+
+.btn-success {
+  @apply bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
+}
+
+/* Card styles */
+.modern-card {
+  @apply bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-all duration-200 hover:shadow-md;
+}
+
+/* Focus styles */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900;
+}
+
+/* Modern input styles */
+.modern-input {
+  display: block;
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid var(--gray-300);
+  background-color: var(--white);
+  color: var(--text-primary);
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.modern-input:focus {
+  outline: none;
+  border-color: var(--blue-500);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.modern-input::placeholder {
+  color: var(--text-secondary);
+}
+
+/* Modern button styles */
+.modern-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  line-height: 1.25rem;
+}
+
+.modern-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.modern-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.modern-btn-primary {
+  background-color: var(--blue-600);
+  color: white;
+}
+
+.modern-btn-primary:hover:not(:disabled) {
+  background-color: var(--blue-700);
+}
+
+.modern-btn-secondary {
+  background-color: var(--gray-100);
+  color: var(--text-primary);
+  border: 1px solid var(--gray-300);
+}
+
+.modern-btn-secondary:hover:not(:disabled) {
+  background-color: var(--gray-200);
+}
+
+.modern-btn-danger {
+  background-color: var(--red-600);
+  color: white;
+}
+
+.modern-btn-danger:hover:not(:disabled) {
+  background-color: var(--red-700);
+}
+
+.modern-btn-white {
+  background-color: var(--white);
+  color: var(--text-primary);
+  border: 1px solid var(--gray-300);
+}
+
+.modern-btn-white:hover:not(:disabled) {
+  background-color: var(--gray-50);
+}
+
+.modern-btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.modern-btn-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+/* Modern badge styles */
+.modern-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1rem;
+}
+
+.modern-badge-blue {
+  background-color: var(--blue-100);
+  color: var(--blue-800);
+}
+
+.modern-badge-green {
+  background-color: var(--green-100);
+  color: var(--green-800);
+}
+
+.modern-badge-yellow {
+  background-color: var(--yellow-100);
+  color: var(--yellow-800);
+}
+
+.modern-badge-red {
+  background-color: var(--red-100);
+  color: var(--red-800);
+}
+
+.modern-badge-gray {
+  background-color: var(--gray-100);
+  color: var(--gray-800);
+}
+
+/* Form styles */
+.modern-form {
+  background-color: var(--card-bg);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+}
+
+.modern-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.modern-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.modern-select {
+  display: block;
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid var(--gray-300);
+  background-color: var(--white);
+  color: var(--text-primary);
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.modern-select:focus {
+  outline: none;
+  border-color: var(--blue-500);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.modern-textarea {
+  display: block;
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid var(--gray-300);
+  background-color: var(--white);
+  color: var(--text-primary);
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease-in-out;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.modern-textarea:focus {
+  outline: none;
+  border-color: var(--blue-500);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.modern-textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+/* Error styles */
+.modern-error {
+  color: var(--red-600);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.modern-alert {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid;
+  margin-bottom: 1rem;
+}
+
+.modern-alert-error {
+  background-color: var(--red-50);
+  border-color: var(--red-200);
+  color: var(--red-700);
+}
+
+.modern-alert-success {
+  background-color: var(--green-50);
+  border-color: var(--green-200);
+  color: var(--green-700);
+}
+
+.modern-alert-info {
+  background-color: var(--blue-50);
+  border-color: var(--blue-200);
+  color: var(--blue-700);
+}
+
+.modern-alert-warning {
+  background-color: var(--yellow-50);
+  border-color: var(--yellow-200);
+  color: var(--yellow-700);
+}
+
+/* Drag and Drop Assignment Styles */
+.drag-drop-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.assignment-column {
+  border: 2px dashed #d1d5db;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  min-height: 300px;
+  transition: all 0.3s ease;
+}
+
+.dark .assignment-column {
+  border-color: #4b5563;
+  background-color: #1f2937;
+}
+
+.assignment-column.drag-over {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+  transform: scale(1.02);
+}
+
+.dark .assignment-column.drag-over {
+  background-color: #1e3a8a;
+}
+
+.assignment-column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.dark .assignment-column-header {
+  color: #f9fafb;
+}
+
+.assignment-count {
+  background-color: #dbeafe;
+  color: #1e40af;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.dark .assignment-count {
+  background-color: #1e40af;
+  color: #bfdbfe;
+}
+
+.assignable-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  cursor: grab;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.dark .assignable-item {
+  background-color: #374151;
+  border-color: #4b5563;
+}
+
+.assignable-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: #93c5fd;
+}
+
+.assignable-item:active {
+  cursor: grabbing;
+}
+
+.assignable-item .avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white;
+  font-weight: 600;
+  font-size: 0.75rem;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+.assignable-item .info {
+  flex: 1;
+  min-width: 0;
+}
+
+.assignable-item .name {
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 0.125rem;
+}
+
+.dark .assignable-item .name {
+  color: #f9fafb;
+}
+
+.assignable-item .title {
+  font-size: 0.75rem;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dark .assignable-item .title {
+  color: #9ca3af;
+}
+
+/* Sortable.js styles */
+.sortable-ghost {
+  opacity: 0.5;
+  background: rgba(59, 130, 246, 0.1);
+  border: 2px dashed #3b82f6;
+}
+
+.dark .sortable-ghost {
+  background-color: #1e3a8a;
+}
+
+.sortable-chosen {
+  transform: rotate(2deg);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.sortable-drag {
+  opacity: 0.8;
+  transform: rotate(3deg);
+  z-index: 1000;
+}
+
+/* Animation classes */
+.newly-assigned {
+  animation: assignPulse 0.5s ease-out;
+}
+
+.newly-removed {
+  animation: removePulse 0.5s ease-out;
+}
+
+.search-updating {
+  animation: searchUpdate 0.3s ease-out;
+}
+
+@keyframes assignPulse {
+  0% {
+    transform: scale(1);
+    background-color: #dcfce7;
+  }
+
+  50% {
+    transform: scale(1.05);
+    background-color: #bbf7d0;
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: #ffffff;
+  }
+}
+
+@keyframes removePulse {
+  0% {
+    transform: scale(1);
+    background-color: #fee2e2;
+  }
+
+  50% {
+    transform: scale(1.05);
+    background-color: #fecaca;
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: #ffffff;
+  }
+}
+
+@keyframes searchUpdate {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Dark mode animations */
+.dark .newly-assigned {
+  animation: assignPulseDark 0.5s ease-out;
+}
+
+.dark .newly-removed {
+  animation: removePulseDark 0.5s ease-out;
+}
+
+@keyframes assignPulseDark {
+  0% {
+    transform: scale(1);
+    background-color: #065f46;
+  }
+
+  50% {
+    transform: scale(1.05);
+    background-color: #047857;
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: #374151;
+  }
+}
+
+@keyframes removePulseDark {
+  0% {
+    transform: scale(1);
+    background-color: #7f1d1d;
+  }
+
+  50% {
+    transform: scale(1.05);
+    background-color: #991b1b;
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: #374151;
+  }
+}
+
+/* Enhanced drag feedback */
+.assignable-item.sortable-chosen {
+  transform: rotate(5deg) scale(1.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border-color: #3b82f6;
+  background-color: #eff6ff !important;
+}
+
+.dark .assignable-item.sortable-chosen {
+  background-color: #1e3a8a !important;
+}
+
+/* Visual feedback for drag over states */
+.assignment-column[data-sortable-over="true"] {
+  border-color: #10b981;
+  background-color: #ecfdf5;
+  transform: scale(1.02);
+}
+
+.dark .assignment-column[data-sortable-over="true"] {
+  background-color: #064e3b;
+}
+
+/* Pulse animation for empty states */
+.assignment-empty {
+  animation: gentlePulse 3s ease-in-out infinite;
+}
+
+@keyframes gentlePulse {
+
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Search input enhancements */
+.assignment-search input:focus+.search-icon {
+  color: #3b82f6;
+}
+
+/* Instruction tooltip */
+.drag-instruction {
+  position: absolute;
+  top: -2rem;
+  right: 0;
+  background-color: #1f2937;
+  color: #f9fafb;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.dark .drag-instruction {
+  background-color: #f9fafb;
+  color: #1f2937;
+}
+
+.drag-drop-container:hover .drag-instruction {
+  opacity: 1;
+}
+
+/* Counter badge animations */
+.assignment-count {
+  transition: all 0.3s ease;
+}
+
+.assignment-count.updated {
+  transform: scale(1.2);
+  background-color: #10b981;
+  color: white;
+}
+
+/* Enhanced responsive design */
+@media (max-width: 640px) {
+  .assignable-item {
+    padding: 0.5rem;
+  }
+
+  .assignable-item .avatar {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.625rem;
+  }
+
+  .assignable-item .name {
+    font-size: 0.875rem;
+  }
+
+  .assignable-item .title {
+    font-size: 0.625rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .drag-drop-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .assignment-column {
+    min-height: 200px;
+  }
+}
+
+/* Empty state */
+.assignment-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  color: #6b7280;
+  text-align: center;
+}
+
+.assignment-empty .icon {
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.5;
+}
+
+.assignment-empty .text {
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+/* Kanban Board Layout */
+.kanban-board {
+  display: flex;
+  gap: 1.5rem;
+  min-height: calc(100vh - 200px);
+  overflow-x: auto;
+  padding: 1rem 0;
+}
+
+.kanban-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+  max-width: 320px;
+  background: white;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  height: fit-content;
+  min-height: 400px;
+}
+
+.dark .kanban-column {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.kanban-column-header {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+  border-radius: 0.75rem 0.75rem 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.dark .kanban-column-header {
+  background: #111827;
+  border-color: #374151;
+}
+
+.kanban-column-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1rem;
+  min-height: 300px;
+}
+
+.kanban-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+  margin-bottom: 1rem;
+}
+
+.kanban-add-task {
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+.kanban-task-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dark .kanban-task-card {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+.kanban-task-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-color: #3b82f6;
+}
+
+.dark .kanban-task-card:hover {
+  border-color: #60a5fa;
+}
+
+.kanban-task-title {
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+  line-height: 1.4;
+}
+
+.dark .kanban-task-title {
+  color: #f9fafb;
+}
+
+.kanban-task-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.75rem;
+}
+
+.dark .kanban-task-meta {
+  color: #9ca3af;
+}
+
+.kanban-task-priority {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.625rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.kanban-task-priority.high {
+  background: #fecaca;
+  color: #991b1b;
+}
+
+.dark .kanban-task-priority.high {
+  background: #7f1d1d;
+  color: #fca5a5;
+}
+
+.kanban-task-priority.medium {
+  background: #fed7aa;
+  color: #9a3412;
+}
+
+.dark .kanban-task-priority.medium {
+  background: #7c2d12;
+  color: #fdba74;
+}
+
+.kanban-task-priority.low {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.dark .kanban-task-priority.low {
+  background: #064e3b;
+  color: #6ee7b7;
+}
+
+.kanban-task-priority.critical {
+  background: #fee2e2;
+  color: #7f1d1d;
+}
+
+.dark .kanban-task-priority.critical {
+  background: #7f1d1d;
+  color: #fecaca;
+}
+
+.kanban-task-assignees {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.kanban-task-avatar {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: white;
+  border: 2px solid white;
+  margin-left: -0.25rem;
+}
+
+.kanban-task-avatar:first-child {
+  margin-left: 0;
+}
+
+.dark .kanban-task-avatar {
+  border-color: #1f2937;
+}
+
+/* Modal specific styles */
+.modal-overlay {
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dark .modal-header {
+  border-color: #374151;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  border-top: 1px solid #e5e7eb;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.dark .modal-footer {
+  border-color: #374151;
+}
+
+/* Responsive Kanban */
+@media (max-width: 768px) {
+  .kanban-board {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .kanban-column {
+    min-width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Loading states */
+.modal-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #6b7280;
+}
+
+.modal-loading .spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 0.75rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -6,3 +6,8 @@ pin "@hotwired/stimulus", to: "stimulus.min.js"
 pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 pin_all_from "app/javascript/controllers", under: "controllers"
 pin "flowbite", to: "https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.turbo.min.js"
+pin "sortablejs", to: "sortablejs.js"
+pin "apexcharts", to: "apexcharts.js" # @4.7.0
+# https://cdn.jsdelivr.net/npm/apextree
+pin "apextree", to: "apextree.js" # @1.3.0
+# pin "apextree", to: "https://cdn.jsdelivr.net/npm/apextree" # @1.3.0

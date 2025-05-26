@@ -1,0 +1,61 @@
+<div id="new-card-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+  <div class="relative p-4 w-full max-w-2xl max-h-full">
+    <div class="relative bg-white rounded-2xl shadow-xl dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-700 rounded-t-2xl bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Add New Card</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Create a new column for organizing tasks</p>
+          </div>
+        </div>
+        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-100 hover:text-gray-600 rounded-xl text-sm w-10 h-10 inline-flex justify-center items-center dark:hover:bg-gray-700 dark:hover:text-white transition-all" data-modal-hide="new-card-modal">
+          <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+          </svg>
+          <span class="sr-only">Close modal</span>
+        </button>
+      </div>
+      <!-- Modal Content -->
+      <div class="p-6">
+        <%= form_with(model: [@board, Card.new], local: true, class: "space-y-6") do |form| %>
+          <!-- Card Title -->
+          <div class="space-y-2">
+            <%= form.label :title, class: "block text-sm font-semibold text-gray-900 dark:text-white" %>
+            <%= form.text_field :title, class: "bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-all", placeholder: "Enter card title..." %>
+          </div>
+          <!-- Card Details Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <%= form.label :color, class: "block text-sm font-semibold text-gray-900 dark:text-white" %>
+              <div class="relative">
+                <%= form.color_field :color, value: "#6366f1", class: "bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent block w-full h-12 dark:bg-gray-700 dark:border-gray-600 transition-all cursor-pointer" %>
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <%= form.label :position, class: "block text-sm font-semibold text-gray-900 dark:text-white" %>
+              <%= form.number_field :position, class: "bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-all", placeholder: "Position (optional)" %>
+            </div>
+          </div>
+          <!-- Modal Actions -->
+          <div class="flex items-center justify-end pt-6 space-x-3 border-t border-gray-100 dark:border-gray-700">
+            <button data-modal-hide="new-card-modal" type="button" class="py-2.5 px-5 text-sm font-medium text-gray-600 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-gray-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-all">
+              Cancel
+            </button>
+            <%= form.submit "Create Card", class: "text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 focus:ring-4 focus:outline-none focus:ring-purple-300 font-semibold rounded-lg text-sm px-6 py-2.5 text-center dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800 transition-all shadow-lg" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

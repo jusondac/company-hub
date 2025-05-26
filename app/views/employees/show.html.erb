@@ -1,0 +1,89 @@
+<div class="min-h-full bg-white dark:bg-gray-900 transition-colors">
+  <div class="max-w-5xl mx-auto px-6 py-12">
+    <header class="mb-10">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight"><%= @employee.username %></h1>
+      <p class="text-lg text-gray-500 dark:text-gray-300 mt-2"><%= @employee.title %></p>
+    </header>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+      <div>
+        <h3 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-3 tracking-widest">Contact</h3>
+        <ul class="space-y-2 text-base text-gray-700 dark:text-gray-200">
+          <li><span class="font-medium">Email:</span> <%= @employee.email %></li>
+          <li><span class="font-medium">Address:</span> <%= @employee.address %></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-3 tracking-widest">Organization</h3>
+        <ul class="space-y-2 text-base text-gray-700 dark:text-gray-200">
+          <li><span class="font-medium">Position:</span> <%= @employee.position %></li>
+          <li><span class="font-medium">Hierarchy:</span> <%= @employee.hierarchy_level %></li>
+          <% if @employee.parent.present? %>
+            <li>
+              <span class="font-medium">Reports to:</span>
+              <%= link_to @employee.parent.username, employee_path(@employee.parent), class: "text-blue-600 dark:text-blue-400 hover:underline" %>
+            </li>
+          <% else %>
+            <li>
+              <span class="font-medium">Role:</span>
+              <span class="text-green-600 dark:text-green-400">Top Level Executive</span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </section>
+
+    <% if @employee.children.any? %>
+      <section class="mb-12">
+        <h3 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-3 tracking-widest">Direct Reports</h3>
+        <div class="flex flex-wrap gap-8">
+          <% @employee.children.each do |child| %>
+            <div class="pl-4 border-l-2 border-blue-400 dark:border-blue-600">
+              <span class="block font-semibold text-gray-900 dark:text-gray-100"><%= child.username %></span>
+              <span class="block text-sm text-gray-500 dark:text-gray-400"><%= child.title %></span>
+              <%= link_to "View", employee_path(child), class: "text-blue-500 dark:text-blue-400 hover:underline text-xs mt-1" %>
+            </div>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+
+    <% if @employee.boards.any? %>
+      <section class="mb-12">
+        <h3 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-3 tracking-widest">Managed Boards</h3>
+        <div class="flex flex-wrap gap-8">
+          <% @employee.boards.each do |board| %>
+            <div class="pl-4 border-l-2 border-indigo-400 dark:border-indigo-600">
+              <span class="block font-semibold text-blue-900 dark:text-blue-200"><%= board.name %></span>
+              <p class="block text-sm text-blue-700 dark:text-blue-300 mt-1"><%= truncate(board.description, length: 100) %></p>
+              <%= link_to "View Board", board_path(board), class: "text-blue-500 dark:text-blue-400 hover:underline text-xs mt-2" %>
+            </div>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+
+    <% if @employee.tasks.any? %>
+      <section class="mb-12">
+        <h3 class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-3 tracking-widest">Assigned Tasks</h3>
+        <div class="flex flex-col gap-4">
+          <% @employee.tasks.each do |task| %>
+            <div class="pl-4 border-l-2 border-yellow-400 dark:border-yellow-600">
+              <span class="block font-semibold text-yellow-900 dark:text-yellow-200"><%= task.title %></span>
+              <p class="block text-sm text-yellow-700 dark:text-yellow-300 mt-1"><%= truncate(task.description, length: 150) %></p>
+              <span class="block text-xs text-yellow-600 dark:text-yellow-400">Board: <%= task.board.name %></span>
+            </div>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+
+    <nav class="flex flex-wrap gap-4 mt-12">
+      <%= link_to "Edit", edit_employee_path(@employee), class: "bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 text-white font-semibold py-2 px-6 rounded-full transition" %>
+      <%= link_to "Delete", employee_path(@employee), method: :delete, 
+                  data: { confirm: "Are you sure?" }, 
+                  class: "bg-red-500 dark:bg-red-700 hover:bg-red-600 dark:hover:bg-red-800 text-white font-semibold py-2 px-6 rounded-full transition" %>
+      <%= link_to "Back", employees_path, class: "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-100 font-semibold py-2 px-6 rounded-full transition" %>
+    </nav>
+  </div>
+</div>

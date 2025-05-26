@@ -1,0 +1,44 @@
+<div class="container mx-auto px-6 py-8">
+  <div class="mb-8">
+    <div class="flex items-center gap-3 mb-4">
+      <%= link_to board_path(@board), class: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" do %>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+      <% end %>
+      <nav class="flex" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-2 text-gray-500 dark:text-gray-400">
+          <li>
+            <%= link_to "Boards", boards_path, class: "hover:text-gray-700 dark:hover:text-gray-300 transition-colors" %>
+          </li>
+          <li class="flex items-center">
+            <svg class="w-4 h-4 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+            <%= link_to @board.name, board_path(@board), class: "hover:text-gray-700 dark:hover:text-gray-300 transition-colors" %>
+          </li>
+          <li class="flex items-center">
+            <svg class="w-4 h-4 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+            <span class="text-gray-900 dark:text-white font-medium">New Card</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Create New Card</h1>
+        <p class="text-gray-600 dark:text-gray-400">Add a new card to organize tasks in your Kanban board</p>
+      </div>
+    </div>
+  </div>
+  <div class="max-w-2xl">
+    <%= render 'form', card: @card %>
+  </div>
+</div>

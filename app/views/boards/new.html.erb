@@ -1,0 +1,121 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-full">
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex items-center space-x-4 mb-4">
+        <div class="h-10 w-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+          <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path>
+          </svg>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Create New Board</h1>
+      </div>
+      <p class="text-gray-600 dark:text-gray-400">Set up a new project board to organize tasks and workflows</p>
+    </div>
+    <!-- Form -->
+    <%= form_with model: @board, local: true do |form| %>
+      <!-- Error Messages -->
+      <% if @board.errors.any? %>
+        <div class="modern-alert modern-alert-error mb-6">
+          <h3 class="font-semibold">Please fix the following errors:</h3>
+          <ul class="mt-2 space-y-1">
+            <% @board.errors.full_messages.each do |message| %>
+              <li>• <%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <div class="flex w-full gap-5">
+        <div class="modern-form-group w-1/2">
+          <label class="modern-label">Assign Managers</label>
+          <div class="flex items-center justify-between mb-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Drag employees from available list to assign them as board managers</p>
+            <div class="drag-instruction">
+              💡 Tip: Drag and drop to assign managers
+            </div>
+          </div>
+          <div data-controller="drag-drop-assign" 
+               data-drag-drop-assign-field-name-value="board[employee_ids][]"
+               data-drag-drop-assign-initial-assigned-value="<%= (@board.employee_ids || []).to_json %>">
+            <!-- Search for available employees -->
+            <div class="assignment-search">
+              <input type="text" 
+                     data-drag-drop-assign-target="searchInput"
+                     placeholder="Search employees by name or title..." 
+                     class="bg-gray-800 border border-gray-700 w-full px-2 py-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+              <button type="button" 
+                      data-action="click->drag-drop-assign#clearSearch"
+                data-drag-drop-assign-target="clearSearch"
+                class="clear-search hidden">
+              </button>
+            </div>
+            <div class="drag-drop-container h-72">
+              <!-- Available Employees -->
+              <div class="assignment-column overflow-y-auto">
+                <div class="assignment-column-header">
+                  <span>📋 Available Employees</span>
+                  <span class="assignment-count"><%= @employees.count %></span>
+                </div>
+                <div data-drag-drop-assign-target="availableList">
+                  <% if @employees.any? %>
+                    <% @employees.each do |employee| %>
+                      <div class="assignable-item" 
+                           data-id="<%= employee.id %>"
+                           data-search-text="<%= "#{employee.username} #{employee.title}".downcase %>">
+                        <div class="avatar">
+                          <%= employee.username.first.upcase %>
+                        </div>
+                        <div class="info">
+                          <div class="name"><%= employee.username %></div>
+                          <div class="title"><%= employee.title %></div>
+                        </div>
+                      </div>
+                    <% end %>
+                  <% else %>
+                    <div class="assignment-empty">
+                      <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                      </svg>
+                      <div class="text">No employees available</div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+              <!-- Assigned Managers -->
+              <div class="assignment-column overflow-y-auto">
+                <div class="assignment-column-header">
+                  <span>👥 Assigned Managers</span>
+                  <span class="assignment-count">0</span>
+                </div>
+                <div data-drag-drop-assign-target="assignedList">
+                  <div class="assignment-empty">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    <div class="text">Drag employees here to assign as managers</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Hidden inputs container -->
+            <div data-drag-drop-assign-target="hiddenInput"></div>
+          </div>
+        </div>
+        <div class="w-1/2">
+          <div class="modern-form-group">
+            <%= form.label :name, "Board Name", class: "modern-label" %>
+            <%= form.text_field :name, class: "bg-gray-800 w-full px-2 py-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "Enter board name" %>
+          </div>
+          <div class="modern-form-group">
+            <%= form.label :description, "Description", class: "modern-label" %>
+            <%= form.text_area :description, rows: 4, class: "bg-gray-800 w-full px-2 py-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "Describe the purpose and goals of this board" %>
+          </div>
+          <div class="flex justify-between pt-6">
+            <%= link_to "Cancel", boards_path, class: "bg-gray-800 px-4 py-2 rounded-lg" %>
+            <%= form.submit "Create Board", class: "bg-gradient-to-r from-purple-600 to-purple-500 hover:bg-purple-700 px-4 py-2 rounded-lg font-bold" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

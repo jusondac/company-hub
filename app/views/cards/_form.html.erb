@@ -1,0 +1,72 @@
+<%= form_with(model: [@board, @card], local: true, class: "space-y-6") do |form| %>
+  <% if @card.errors.any? %>
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">There were <%= pluralize(@card.errors.count, "error") %> with your submission:</h3>
+          <div class="mt-2 text-sm text-red-700">
+            <ul class="list-disc pl-5 space-y-1">
+              <% @card.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+    <div class="p-6">
+      <div class="grid grid-cols-1 gap-6">
+        <!-- Title Field -->
+        <div>
+          <%= form.label :title, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+          <%= form.text_field :title, 
+                              class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors",
+                              placeholder: "Enter card title..." %>
+        </div>
+        <!-- Color Field -->
+        <div>
+          <%= form.label :color, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+          <div class="grid grid-cols-8 gap-3">
+            <% %w[#6366f1 #8b5cf6 #ec4899 #ef4444 #f59e0b #10b981 #06b6d4 #6b7280].each do |color| %>
+              <label class="relative cursor-pointer">
+                <%= form.radio_button :color, color, 
+                                      class: "sr-only peer",
+                                      checked: (@card.color == color || (@card.new_record? && color == '#6366f1')) %>
+                <div class="w-10 h-10 rounded-lg border-2 border-gray-300 peer-checked:border-gray-600 peer-checked:ring-2 peer-checked:ring-offset-2 peer-checked:ring-gray-500 transition-all"
+                     style="background-color: <%= color %>;"></div>
+              </label>
+            <% end %>
+          </div>
+        </div>
+        <!-- Position Field (only for edit) -->
+        <% unless @card.new_record? %>
+          <div>
+            <%= form.label :position, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.number_field :position, 
+                                  class: "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors",
+                                  min: 1 %>
+            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Lower numbers appear first in the board.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <!-- Form Actions -->
+    <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 rounded-b-xl">
+      <div class="flex items-center justify-end gap-3">
+        <%= link_to board_path(@board), 
+                    class: "bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg transition-colors" do %>
+          Cancel
+        <% end %>
+        <%= form.submit (@card.new_record? ? "Create Card" : "Update Card"), 
+                        class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors" %>
+      </div>
+    </div>
+  </div>
+<% end %>

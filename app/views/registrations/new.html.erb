@@ -1,25 +1,59 @@
-<div class="mx-auto md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">Sign up</h1>
-  <%= form_with model: @user, url: registration_url, class: "contents" do |form| %>
-    <div class="my-5">
-      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
-    </div>
-    <div class="my-5">
-      <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
-    </div>
-    <div class="my-5">
-      <%= form.password_field :password_confirmation, required: true, autocomplete: "current-password", placeholder: "Confirm your password", maxlength: 72, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
-    </div>
-    <div class="col-span-6 sm:flex sm:items-center sm:gap-4">
-      <div class="inline">
-        <%= form.submit "Sign up", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <!-- Header -->
+    <div class="text-center">
+      <div class="mx-auto h-12 w-12 bg-gradient-to-br from-green-500 to-blue-600 rounded-xl flex items-center justify-center mb-6">
+        <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+        </svg>
       </div>
-      <div class="inline">
-        Alredy have an account? <%= link_to 'Sign in', new_session_path, class: "text-gray-700 underline hover:no-underline" %>
-      </div>
-      <div class="mt-4 text-sm text-gray-500 sm:mt-0">
-        <%= link_to "Forgot password?", new_password_path, class: "text-gray-700 underline" %>
-      </div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Create your account</h1>
+      <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Join Company Hub and start managing your team</p>
     </div>
-  <% end %>
+    <!-- Form -->
+    <div class="modern-form">
+      <%= form_with model: @user, url: registration_url do |form| %>
+        <div class="modern-form-group">
+          <%= form.label :email_address, "Email address", class: "modern-label" %>
+          <%= form.email_field :email_address, 
+              required: true, 
+              autofocus: true, 
+              autocomplete: "username", 
+              placeholder: "Enter your email address", 
+              value: params[:email_address], 
+              class: "modern-input" %>
+        </div>
+        <div class="modern-form-group">
+          <%= form.label :password, "Password", class: "modern-label" %>
+          <%= form.password_field :password, 
+              required: true, 
+              autocomplete: "new-password", 
+              placeholder: "Enter your password", 
+              maxlength: 72, 
+              class: "modern-input" %>
+        </div>
+        <div class="modern-form-group">
+          <%= form.label :password_confirmation, "Confirm Password", class: "modern-label" %>
+          <%= form.password_field :password_confirmation, 
+              required: true, 
+              autocomplete: "new-password", 
+              placeholder: "Confirm your password", 
+              maxlength: 72, 
+              class: "modern-input" %>
+        </div>
+        <div class="flex items-center justify-between">
+          <%= form.submit "Create Account", class: "modern-btn modern-btn-primary modern-btn-lg w-full mb-4" %>
+        </div>
+        <div class="text-center space-y-3">
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Already have an account? 
+            <%= link_to 'Sign in', new_session_path, class: "font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400" %>
+          </p>
+          <p class="text-sm">
+            <%= link_to "Forgot your password?", new_password_path, class: "font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400" %>
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>

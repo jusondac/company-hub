@@ -1,22 +1,50 @@
-<div class="mx-auto md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">Sign in</h1>
-  <%= form_with url: session_url, class: "contents" do |form| %>
-    <div class="my-5">
-      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "block shadow-sm rounded-md border border-gray-400 focus:outline-blue-600 px-3 py-2 mt-2 w-full" %>
-    </div>
-    <div class="my-5">
-      <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72, class: "block shadow-sm rounded-md border border-gray-400 focus:outline-blue-600 px-3 py-2 mt-2 w-full" %>
-    </div>
-    <div class="col-span-6 sm:flex sm:items-center sm:gap-4">
-      <div class="inline">
-        <%= form.submit "Sign in", class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <!-- Header -->
+    <div class="text-center">
+      <div class="mx-auto h-12 w-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mb-6">
+        <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+        </svg>
       </div>
-      <div class="inline">
-        Don't have an Account? <%= link_to 'Signup', new_registration_path, class: "text-gray-700 underline hover:no-underline" %>
-      </div>
-      <div class="mt-4 text-sm text-gray-500 sm:mt-0">
-        <%= link_to "Forgot password?", new_password_path, class: "text-gray-700 underline hover:no-underline" %>
-      </div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Welcome back</h1>
+      <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Sign in to your Company Hub account</p>
     </div>
-  <% end %>
+    <!-- Form -->
+    <div class="modern-form">
+      <%= form_with url: session_url do |form| %>
+        <div class="modern-form-group">
+          <%= form.label :email_address, "Email address", class: "modern-label" %>
+          <%= form.email_field :email_address, 
+              required: true, 
+              autofocus: true, 
+              autocomplete: "username", 
+              placeholder: "Enter your email address", 
+              value: params[:email_address], 
+              class: "modern-input" %>
+        </div>
+        <div class="modern-form-group">
+          <%= form.label :password, "Password", class: "modern-label" %>
+          <%= form.password_field :password, 
+              required: true, 
+              autocomplete: "current-password", 
+              placeholder: "Enter your password", 
+              maxlength: 72, 
+              class: "modern-input" %>
+        </div>
+        <div class="flex items-center justify-between">
+          <%= form.submit "Sign in", class: "modern-btn modern-btn-primary modern-btn-lg w-full mb-4" %>
+        </div>
+        <div class="text-center space-y-3">
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Don't have an account? 
+            <%= link_to 'Sign up', new_registration_path, class: "font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400" %>
+          </p>
+          <p class="text-sm">
+            <%= link_to "Forgot your password?", new_password_path, class: "font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400" %>
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>

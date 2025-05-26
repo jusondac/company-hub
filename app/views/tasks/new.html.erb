@@ -1,0 +1,140 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex items-center space-x-4 mb-4">
+        <div class="h-10 w-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+          <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Create New Task</h1>
+          <p class="text-sm text-gray-600 dark:text-gray-400">for <%= @board.name %></p>
+        </div>
+      </div>
+      <p class="text-gray-600 dark:text-gray-400">Add a new task to organize work and assign team members</p>
+    </div>
+    <!-- Form -->
+    <div class="modern-form">
+      <%= form_with model: [@board, @task], local: true do |form| %>
+        <!-- Error Messages -->
+        <% if @task.errors.any? %>
+          <div class="modern-alert modern-alert-error mb-6">
+            <h3 class="font-semibold">Please fix the following errors:</h3>
+            <ul class="mt-2 space-y-1">
+              <% @task.errors.full_messages.each do |message| %>
+                <li>• <%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+        <div class="modern-form-group">
+          <%= form.label :title, "Task Title", class: "modern-label" %>
+          <%= form.text_field :title, class: "modern-input", placeholder: "Enter task title" %>
+        </div>
+        <div class="modern-form-group">
+          <%= form.label :description, "Description", class: "modern-label" %>
+          <%= form.text_area :description, rows: 4, class: "modern-textarea", placeholder: "Describe the task requirements and objectives" %>
+        </div>
+        <div class="modern-form-group">
+          <%= form.label :card_id, "Card (Column)", class: "modern-label" %>
+          <%= form.select :card_id, 
+                          options_from_collection_for_select(@board.cards.ordered_by_position, :id, :title, params[:card_id] || @board.cards.first&.id),
+                          { prompt: "Select a card..." }, 
+                          { class: "modern-input" } %>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Choose which card this task should be placed in</p>
+        </div>
+        <div class="modern-form-group">
+          <%= form.label :position, "Position (Order within card)", class: "modern-label" %>
+          <%= form.number_field :position, class: "modern-input", placeholder: "Enter position number" %>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Lower numbers appear first in the task list</p>
+        </div>
+        <div class="modern-form-group">
+          <label class="modern-label">Assign Team Members</label>
+          <div class="flex items-center justify-between mb-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Drag employees from available list to assign them to this task</p>
+            <div class="drag-instruction">
+              🎯 Tip: Drag and drop to assign team members
+            </div>
+          </div>
+          <div data-controller="drag-drop-assign" 
+               data-drag-drop-assign-field-name-value="task[employee_ids][]"
+               data-drag-drop-assign-initial-assigned-value="<%= (@task.employee_ids || []).to_json %>">
+            <!-- Search for available employees -->
+            <div class="assignment-search">
+              <svg class="search-icon h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+              <input type="text" 
+                     data-drag-drop-assign-target="searchInput"
+                     placeholder="Search team members by name or title..." 
+                     class="modern-input">
+              <button type="button" 
+                      data-action="click->drag-drop-assign#clearSearch"
+                class="clear-search hidden">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="drag-drop-container">
+              <!-- Available Team Members -->
+              <div class="assignment-column">
+                <div class="assignment-column-header">
+                  <span>👤 Available Team Members</span>
+                  <span class="assignment-count"><%= @employees.count %></span>
+                </div>
+                <div data-drag-drop-assign-target="availableList">
+                  <% if @employees.any? %>
+                    <% @employees.each do |employee| %>
+                      <div class="assignable-item" 
+                           data-id="<%= employee.id %>"
+                           data-search-text="<%= "#{employee.username} #{employee.title}".downcase %>">
+                        <div class="avatar">
+                          <%= employee.username.first.upcase %>
+                        </div>
+                        <div class="info">
+                          <div class="name"><%= employee.username %></div>
+                          <div class="title"><%= employee.title %></div>
+                        </div>
+                      </div>
+                    <% end %>
+                  <% else %>
+                    <div class="assignment-empty">
+                      <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                      </svg>
+                      <div class="text">No team members available</div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+              <!-- Assigned Team Members -->
+              <div class="assignment-column">
+                <div class="assignment-column-header">
+                  <span>🎯 Assigned Team Members</span>
+                  <span class="assignment-count">0</span>
+                </div>
+                <div data-drag-drop-assign-target="assignedList">
+                  <div class="assignment-empty">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    <div class="text">Drag team members here to assign to this task</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Hidden inputs container -->
+            <div data-drag-drop-assign-target="hiddenInput"></div>
+          </div>
+        </div>
+        <div class="flex justify-between pt-6">
+          <%= link_to "Cancel", board_path(@board), class: "modern-btn modern-btn-secondary" %>
+          <%= form.submit "Create Task", class: "modern-btn modern-btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,116 @@
+<div id="edit-board-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+  <div class="relative p-4 w-full max-w-4xl max-h-full">
+    <div class="relative bg-white rounded-2xl shadow-xl dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-700 rounded-t-2xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Edit Board</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Update board details and manage team members</p>
+          </div>
+        </div>
+        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-100 hover:text-gray-600 rounded-xl text-sm w-10 h-10 inline-flex justify-center items-center dark:hover:bg-gray-700 dark:hover:text-white transition-all" data-modal-hide="edit-board-modal">
+          <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+          </svg>
+          <span class="sr-only">Close modal</span>
+        </button>
+      </div>
+      <!-- Modal Content -->
+      <div class="p-6">
+        <%= form_with(model: @board, local: true, class: "space-y-6") do |form| %>
+          <!-- Board Name -->
+          <div class="space-y-2">
+            <%= form.label :name, class: "block text-sm font-semibold text-gray-900 dark:text-white" %>
+            <%= form.text_field :name, class: "bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-all", placeholder: "Enter board name..." %>
+          </div>
+          <!-- Board Description -->
+          <div class="space-y-2">
+            <%= form.label :description, class: "block text-sm font-semibold text-gray-900 dark:text-white" %>
+            <%= form.text_area :description, rows: 4, class: "bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-all resize-none", placeholder: "Describe your board..." %>
+          </div>
+          <!-- Manager Assignment Section -->
+          <div class="space-y-3">
+            <label class="block text-sm font-semibold text-gray-900 dark:text-white">Assign Managers</label>
+            <div data-controller="drag-drop-assign"
+                 data-drag-drop-assign-field-name-value="board[employee_ids][]"
+                 data-drag-drop-assign-initial-assigned-value="<%= @board.employee_ids.to_json %>"
+                 class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 p-4">
+              <!-- Search -->
+              <div class="mb-4">
+                <div class="relative">
+                  <input type="text" 
+                         data-drag-drop-assign-target="searchInput"
+                         placeholder="Search employees..."
+                         class="w-full pl-10 pr-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm transition-all">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <!-- Available Employees -->
+                <div class="assignment-column">
+                  <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center">
+                    <div class="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                    Available (<span class="assignment-count"><%= Employee.count %></span>)
+                  </h4>
+                  <div data-drag-drop-assign-target="availableList" 
+                       class="min-h-[200px] max-h-60 overflow-y-auto space-y-2 p-3 bg-white dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 shadow-inner">
+                    <% Employee.all.each do |employee| %>
+                      <div class="assignment-item flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg cursor-move hover:bg-gray-100 dark:hover:bg-gray-600 transition-all shadow-sm"
+                           data-id="<%= employee.id %>"
+                           data-search-text="<%= employee.username.downcase %> <%= employee.title.downcase %>">
+                        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-sm">
+                          <span class="text-white text-xs font-bold">
+                            <%= employee.username.first.upcase %>
+                          </span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                          <div class="text-sm font-medium text-gray-900 dark:text-white truncate"><%= employee.username %></div>
+                          <div class="text-xs text-gray-500 dark:text-gray-400 truncate"><%= employee.title %></div>
+                        </div>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+                <!-- Assigned Managers -->
+                <div class="assignment-column">
+                  <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center">
+                    <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                    Assigned Managers (<span class="assignment-count">0</span>)
+                  </h4>
+                  <div data-drag-drop-assign-target="assignedList" 
+                       class="min-h-[200px] max-h-60 overflow-y-auto space-y-2 p-3 bg-white dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 shadow-inner">
+                    <div class="assignment-empty flex flex-col items-center justify-center py-8 text-gray-400 dark:text-gray-500">
+                      <svg class="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                      </svg>
+                      <span class="text-sm">Drag employees here to assign as managers</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Hidden inputs for form submission -->
+              <div data-drag-drop-assign-target="hiddenInput"></div>
+            </div>
+          </div>
+          <!-- Modal Actions -->
+          <div class="flex items-center justify-end pt-6 space-x-3 border-t border-gray-100 dark:border-gray-700">
+            <button data-modal-hide="edit-board-modal" type="button" class="py-2.5 px-5 text-sm font-medium text-gray-600 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-gray-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-all">
+              Cancel
+            </button>
+            <%= form.submit "Update Board", class: "text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-semibold rounded-lg text-sm px-6 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800 transition-all shadow-lg" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

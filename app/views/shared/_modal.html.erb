@@ -1,0 +1,14 @@
+<!-- Modal Container -->
+<div data-controller="modal" 
+     data-modal-size-value="<%= local_assigns[:size] || 'md' %>"
+     class="hidden">
+  <!-- Modal Dialog -->
+  <div data-modal-target="dialog" 
+       class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 z-50 max-h-[90vh] overflow-y-auto transition-all duration-200"
+       style="transform: translate(-50%, -50%) scale(0.95); opacity: 0;">
+    <!-- Modal Content -->
+    <div data-modal-target="content">
+      <!-- Content will be loaded here -->
+    </div>
+  </div>
+</div>
